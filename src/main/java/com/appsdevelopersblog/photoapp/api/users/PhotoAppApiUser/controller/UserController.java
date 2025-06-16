@@ -40,3 +40,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createUserResponseModel);
     }
 }
+/*
+The ResponseEntity class in Spring Framework has several constructors that allow you to create instances with varying levels of customization. Here are the constructors:
+
+## Constructors
+1. ResponseEntity(HttpStatus status) - Creates a new ResponseEntity with the given status code.
+2. ResponseEntity(T body, HttpStatus status) - Creates a new ResponseEntity with the given body and status code.
+3. ResponseEntity(MultiValueMap<String, String> headers, HttpStatus status) - Creates a new ResponseEntity with the given headers and status code.
+4. ResponseEntity(T body, MultiValueMap<String, String> headers, HttpStatus status) - Creates a new ResponseEntity with the given body, headers, and status code.
+
+
+
+ */

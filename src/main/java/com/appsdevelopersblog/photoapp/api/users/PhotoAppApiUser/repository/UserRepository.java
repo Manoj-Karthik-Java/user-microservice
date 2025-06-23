@@ -3,7 +3,9 @@ package com.appsdevelopersblog.photoapp.api.users.PhotoAppApiUser.repository;
 import com.appsdevelopersblog.photoapp.api.users.PhotoAppApiUser.data.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<UserEntity,Long> {}
+public interface UserRepository extends JpaRepository<UserEntity,Long> {
+    UserEntity findByEmail(String email);
+}
 
 
 /*

@@ -1,30 +1,45 @@
 package com.appsdevelopersblog.photoapp.api.users.PhotoAppApiUser.security;
 
 
+import com.appsdevelopersblog.photoapp.api.users.PhotoAppApiUser.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurity {
-
-
+    private UserService userService;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     private final Environment environment;
 
-    public WebSecurity(Environment environment) {
+    public WebSecurity(BCryptPasswordEncoder bCryptPasswordEncoder, Environment environment, UserService userService) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.environment = environment;
+        this.userService = userService;
     }
-
-
-
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
+
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+
+        authenticationManagerBuilder
+                .userDetailsService(userService)
+                .passwordEncoder(bCryptPasswordEncoder);
+
+        AuthenticationManager authenticationManager =
+                authenticationManagerBuilder.build();
+
+
         http.csrf(csrf -> csrf.disable());
 
         http.authorizeHttpRequests(authz -> authz
@@ -33,6 +48,8 @@ public class WebSecurity {
                 )
         );
 
+        http.addFilter(new AuthenticationFilter(userService,environment,authenticationManager));
+        http.authenticationManager(authenticationManager);
         http.sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
@@ -42,8 +59,9 @@ public class WebSecurity {
         );
 
         return http.build();
-
     }
+
+
 
 }
 /*

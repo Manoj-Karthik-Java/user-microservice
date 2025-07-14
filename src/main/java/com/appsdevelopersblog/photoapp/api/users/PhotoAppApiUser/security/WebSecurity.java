@@ -39,6 +39,8 @@ public class WebSecurity {
         AuthenticationManager authenticationManager =
                 authenticationManagerBuilder.build();
 
+        AuthenticationFilter authenticationFilter =   new AuthenticationFilter(userService,environment,authenticationManager);
+        authenticationFilter.setFilterProcessesUrl(environment.getProperty("login.url.path"));
 
         http.csrf(csrf -> csrf.disable());
 
@@ -48,7 +50,7 @@ public class WebSecurity {
                 )
         );
 
-        http.addFilter(new AuthenticationFilter(userService,environment,authenticationManager));
+        http.addFilter(authenticationFilter);
         http.authenticationManager(authenticationManager);
         http.sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

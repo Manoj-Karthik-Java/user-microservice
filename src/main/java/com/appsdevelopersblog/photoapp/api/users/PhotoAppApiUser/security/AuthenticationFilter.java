@@ -66,9 +66,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         String userName = ((User) auth.getPrincipal()).getUsername();
         UserDto userDetails = usersService.getUserDetailsByEmail(userName);
-
-        String tokenSecret = environment.getProperty("token.secret"); //  Reads the secret key from application properties (token.secret).
-        byte[] secretKeyBytes = Base64.getEncoder().encode(tokenSecret.getBytes()); // Encodes the secret key using Base64 (JWT libraries expect it that way).
+        byte[] secretKeyBytes = Base64.getEncoder().encode(environment.getProperty("token.secret").getBytes()); // Encodes the secret key using Base64 (JWT libraries expect it that way).
         SecretKey secretKey = Keys.hmacShaKeyFor(secretKeyBytes); // Uses io.jsonwebtoken.security.Keys to generate a secure signing key from the encoded secret.
 
         Instant now = Instant.now();

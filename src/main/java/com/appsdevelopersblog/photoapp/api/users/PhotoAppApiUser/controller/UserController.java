@@ -7,6 +7,7 @@ import com.appsdevelopersblog.photoapp.api.users.PhotoAppApiUser.shared.UserDto;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,14 +17,16 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     UserService userService;
+    Environment environmet;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, Environment environment) {
         this.userService = userService;
+        this.environmet = environment;
     }
 
     @GetMapping("/status/check")
     public String status() {
-        return "working";
+        return "working with token " + environmet.getProperty("token.secret");
     }
 
     @PostMapping
